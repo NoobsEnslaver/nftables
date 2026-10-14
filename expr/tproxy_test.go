@@ -2,6 +2,7 @@ package expr
 
 import (
 	"encoding/binary"
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -23,14 +24,14 @@ func TestTProxy(t *testing.T) {
 		unix.NFPROTO_NUMPROTO,
 	}
 
-	for _, fam := range fams {
+	for idx, fam := range fams {
 		tests := map[string]*TProxy{
 			"empty-1": &TProxy{},
 			"basic-1": &TProxy{Family: fam, RegPort: 1},
 			"basic-2": &TProxy{Family: fam, RegPort: 1, RegAddr: 2},
 		}
 		for name, origExpr := range tests {
-			t.Run(name, func(t *testing.T) {
+			t.Run(fmt.Sprintf("%s_%d", name, idx), func(t *testing.T) {
 				bin, err := origExpr.marshal(fam)
 				if err != nil {
 					t.Fatalf("on marshal(%d): %v", fam, err)
